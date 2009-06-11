@@ -1,0 +1,108 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+# no parallel execution -- required for dpatch
+.NOTPARALLEL:
+
+PYVERS  := $(shell pyversions -vs)
+PYVER   := $(shell pyversions -vd)
+
+PYNAME=guppy
+PYPACKAGE=python-$(PYNAME)
+BASE=$(CURDIR)/debian
+# PY_COMMON_PATH=$(BASE)/$(PYPACKAGE)-common/usr/share/$(PYP
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+include /usr/share/dpatch/dpatch.make
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	# Add here commands to configure the package.
+
+	touch configure-stamp
+
+build: patch build-stamp
+
+build-stamp: $(PYVERS:%=build-python%)
+	touch $@
+
+build-python%:
+	python$* setup.py build_ext
+	touch $@
+
+build-stamp: configure-stamp $(PYVERS:%=build-python%)
+	touch $@
+
+clean: clean-patched unpatch
+
+clean-patched:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+
+	# Add here commands to clean up after the build process.
+	python setup.py clean
+	rm -f install-python* build-python*
+
+	dh_clean
+
+install: build pre-install $(PYVERS:%=install-python%)
+	install -D --mode 644 gsl-mode-*.el $(BASE)/$(PYPACKAGE)/usr/share/emacs/site-lisp/gsl/gsl-mode.el
+
+pre-install:
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+install-python%:
+	python$* setup.py install --root $(BASE)/$(PYPACKAGE) --no-compile
+	python$* setup.py clean
+	touch $@
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs changelog
+	dh_installdocs
+	dh_installexamples
+#	dh_install
+	dh_installemacsen
+	dh_pycentral
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+#	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure pre-install
