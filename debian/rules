@@ -18,16 +18,12 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 # Main and -lib
 #
 
-## # We need to call the install for arch indep to install things
-## # appropriately
-## install/python-guppy-lib:: install/python-guppy
-## 
 ## # we need to move libraries away first, hence dependence on -lib
 ## binary-install/python-guppy:: install/python-guppy-lib
 ## binary-predeb/python-guppy::
 ## # clean up .pyc files
 ## 	find debian/python-guppy/ -iname *.py[co] | xargs rm -f
-## 
+##
 install/python-guppy-lib::
 # move libraries into the python-guppy-lib package
 #	mkdir -p debian/python-guppy-lib/usr/
@@ -35,8 +31,28 @@ install/python-guppy-lib::
 	  while read so; do \
 	    d=$$(dirname $$so); \
 	    d=$$(echo $$d | sed -e 's,python-guppy/,python-guppy-lib/,g'); \
-	    mkdir -p $$d; mv $$so $$d; \
+	    ddbg=$$(echo $$d | sed -e 's,python-guppy/,python-guppy-lib-dbg/,g'); \
+	    mkdir -p $$d $$ddbg; cp -p $$so $$ddbg; mv $$so $$d; \
 	  done
+
+# we need to move libraries away first, hence dependence on -lib
+# Also without this step, movemodules from pysupport would not
+# move arch-indep part of the module under pyshared
+install/python-guppy:: install/python-guppy-lib
+
+# run at install otherwise at build it tends to do them twice for some
+# reason
+install/python-guppy::
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	for buildver in $(cdbs_python_build_versions); do \
+		echo "I: Running guppy unittests using python$$buildver"; \
+        cd $(CURDIR) && cd $(DEB_SRCDIR)/build/lib.*-$$buildver && \
+		PYTHONPATH=. \
+         $(call cdbs_python_binary,python$$buildver) \
+              -c 'from guppy import hpy; hpy().test()'; \
+    done
+endif
+
 
 #
 # Debugging version -lib-dbg
