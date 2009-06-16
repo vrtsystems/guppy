@@ -2,7 +2,11 @@
 import os, pprint, signal, socket, SocketServer, sys, threading, time, traceback
 import cPickle as pickle
 
-import readline # Imported to _enable_ command line editing
+try:
+    import readline # Imported to _enable_ command line editing
+except ImportError:
+    pass
+
 import select, Queue
 
 from guppy.heapy.RemoteConstants import *
@@ -457,6 +461,16 @@ class Monitor:
 	self.prompt = connection.prompt
 
 def monitor():
+    """monitor() [0]
+
+Start an interactive remote monitor.
+
+This can be used to get information about the state, in
+particular the memory usage, of separately running Python
+processes. 
+
+References
+    [0] heapy_Use.html#heapykinds.Use.monitor"""
     from guppy.heapy import Remote
     Remote.off()
     m = Monitor()

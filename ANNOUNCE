@@ -1,28 +1,59 @@
-I am happy to announce Guppy-PE 0.1.8
+I am happy to announce Guppy-PE 0.1.9
 
 Guppy-PE is a library and programming environment for Python,
 currently providing in particular the Heapy subsystem, which supports
 object and heap memory sizing, profiling and debugging. It also
-includes a prototypical specification language, the Guppy Specificaion
-Language (GSL), which can be used to formally specify aspects of
-Python programs and generate tests and documentation from a common
-source.
+includes a prototypical specification language, the Guppy
+Specification Language (GSL), which can be used to formally specify
+aspects of Python programs and generate tests and documentation from a
+common source.
 
-The current version is updated to work in 64-bit mode and with
-Python-2.6, and still works in 32-bit mode and with Python 2.3, 2.4
-and 2.5. No other major changes have been made from Guppy 0.1.6.
+The main news in this release:
 
-In the nearest future, I plan to add interactive help and more
-examples to the documentation, perhaps a tutorial. Look out for this
-in the svn HEAD if you want the latest version. I will try to make a
-new release in perhaps a month or so.
+o A patch by Chad Austin to compile with Visual Studio 2003 and Python
+  2.5 C compilers. I think this may fix similar problems with other
+  Microsoft compilers.
+
+o Tentative interactive help system, providing a .doc attribute that
+  can be used to get info on available attributes in text form and
+  also by invoking a browser.
+
+Begin Example
+
+>>> from guppy import hpy;hp=hpy()
+>>> hp.doc
+Top level interface to Heapy. Available attributes:
+Anything            Nothing             Via                 iso
+...
+
+>>> hp.doc.doc
+Overview documentation for top level Heapy object.
+Provides a listing of the available attributes.
+Accessing the attribute name on the doc objects gives further info, eg:
+
+>>> hp.doc.heap
+
+gives doc for the heap method when hp is the top level Heapy object.
+
+References may be embedded in the documentations. To access a
+reference, opening up a web browser with the doc for it one can do eg:
+
+>>> hp.doc.heap[1]
+
+The reference number 0 is special. If it is provided, it is the
+reference to the html doc for the described object itself. So to see
+in the web browser the doc for the heap method one can do:
+
+>>> hp.doc.heap[0]
+
+End Example
 
 License: MIT
 
-Guppy-PE 0.1.8 is available in source tarball format on the Python
+Guppy-PE 0.1.9 is available in source tarball format on the Python
 Package Index (a.k.a. Cheeseshop):
 
-        http://pypi.python.org/pypi/guppy/0.1.8
+        http://pypi.python.org/pypi/guppy/0.1.9
 
 The project homepage is on Sourceforge:
 

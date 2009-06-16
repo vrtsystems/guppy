@@ -1,3 +1,156 @@
+2009-06-12  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* ANNOUNCE: Tells about interactive help with example.
+
+	* specs/index.gsl: Download section updated for 0.1.9. Credits
+	added Yaroslav Halchenko.
+
+2009-04-07  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* guppy/heapy/Monitor.py: made import readline optional
+
+	* setup.py (doit): package_data uses *.html & *.jpg
+
+2009-03-08  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* ANNOUNCE: news for 0.1.9
+
+2009-01-09  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* guppy/gsl/Tester.py (TestOf.make_cat.get_example_expr): Made the
+	example values be regenerated each time. (Unless 0 is true.)
+	Affects speed sometimes (an extra function call per arg) but may
+	also be faster.
+
+	* guppy/heapy/Use.py (_GLUECLAMP_.load): changed usereadline to
+	use_readline to correspond to doc .
+
+	* guppy/heapy/Prof.py (Menu.delete): Removed commented-out lines
+	to delete commands.
+
+2008-11-03  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* guppy/heapy/UniSet.py (UniSet & IdentitySet): Removed several
+	_get_xxx methods and put the definitions directly in properties as
+	lambdas with docstrings (to clean up result of help()) . 
+
+2008-10-31  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* guppy/heapy/Prof.py (_GLUECLAMP.pb_): Added docstring
+
+	* guppy/heapy/Monitor.py (monitor): Added docstring
+
+	* guppy/heapy/UniSet.py (UniSet etc): Made the docstrings of _get_ 
+	wording in terms of attributes rather than methods.
+
+	* guppy/heapy/Use.py (_GLUECLAMP_): Added more dir/help
+
+	* guppy/doc/__init__.py : Added more dir support
+
+2008-10-28  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* src/sets/bitset.c (mutbitset_iop_PyLongObject): Made explit long
+	cast to long for num_poses, to get rid of warning from MSVC.
+
+	* setup.py: Removed extra_compile_args and extra_link_args vars.
+
+	* src/heapy/heapy.h: Removed DL_IMPORT macro usage.
+
+	* src/sets/sets_internal.h: Removed all DL_IMPORT macros.
+	  to get rid of warning from MSVC about inconsistent linkage.
+
+2008-10-25  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* setup.py: Removed the extra compile args for MSWindows -
+	  they were only there for debugging.
+
+2008-10-24  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* Added debug parameter to hpy().test() and made all test_main
+	  functions take that parameter. When true, it will be possible
+	  to look into the failure stack with pdb.pm() .
+
+	* Added Chad Austin's patch for MSWINDOWS
+	  Made a temp os-determination. Have to check this out.
+	  Changed macro FILL to return -1 to get rid of warning in a set init.
+	  Made the initfunc in heapyc return an int to get rid of new warning.
+	  Moved & renamed macro to NYFILL in new file src/include/guppy.h
+	  which is intended to host general public guppy related includes.
+	  Made corresponding changes FILL->NYFILL where used.
+	
+2008-06-18  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* guppy/doc/__init__.py (Tab): Added tabs for different help
+	browsing environments. 
+
+2008-06-17  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* guppy/doc/__init__.py (_GLUECLAMP_.help_instance): Added
+	method. Also added Subject class.
+
+	* guppy/heapy/UniSet.py (UniSet and subclasses): Added _help_url_
+	attributes and _get_help which uses this via help_instance, but I
+	began to think they should perhaps refer to the gsl kindnames
+	instead. 
+
+	* guppy/doc/__init__.py (Document): Added class Document, various
+	restructurings in progress
+
+2008-05-22  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* README (License): Added modify and redistribute wording to
+	the License for clarity, still refers to MIT license.
+
+	* Removed ihelp pkg. Changes to various files to reflect
+	ihelp->doc .
+	
+	* Moved ihelp.__init__.py into guppy/doc
+	
+	* Moved top-level doc dir into guppy package
+	
+	*  ihelp.__init__.py : continued improving text html rendering
+
+2008-05-21  Sverker Nilsson  <sverker@sverker-laptop>
+
+	* guppy/heapy/Spec.py: 
+
+	* guppy/gsl/Filer.py: 
+
+	* guppy/gsl/DottedTree.py: 
+
+	* guppy (docstring): Changed quotes to """ from ''' because I
+	found pydoc.gui() (in Python 2.5) didn't recognize it otherwise.
+
+	* guppy/etc/Glue.py (Share.getattr2): Made it try getattr3 with
+	the CLAMP first even if it was a package.
+
+2008-05-20  Sverker Nilsson  <sverker@sverker-laptop>
+
+	*  (Default): Made ihelp directory and made guppy.help work first
+	version. 
+
+	* guppy/etc/PrettyPrintHTML.py: Added
+
+	* guppy/gsl/Html.py (Node2Html): visit_comment: Made it not
+	output anything to the XHTML file.
+
+2008-05-14  Sverker Nilsson  <sverker@sverker-laptop>
+
+	*  (specs/index.gsl): Added external resources documentation
+	section and two external links.
+
+2008-04-09  Sverker Nilsson  <sverker@sverker-laptop>
+
+	*  (changelog): Renamed to ChangeLog since Emacs insists on having
+	it as default name.
+
+	* MANIFEST: added specs/genguppydoc.py
+
+	* specs/index.gsl: Made it use css, improved table layout for doc
+	and download.
+	Added doc/css/guppy.css
+	
+	
 	Version 0.1.8
 
 

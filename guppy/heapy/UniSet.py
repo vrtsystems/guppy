@@ -1,7 +1,18 @@
 #._cv_part guppy.heapy.UniSet
 
+import guppy
+
 class UniSet(object):
     __slots__ = '_hiding_tag_', 'fam',  '_origin_'
+    _help_url_ = 'heapy_UniSet.html#heapykinds.UniSet'
+    _instahelp_ = ''
+
+    _doc_nodes = """nodes: ImmNodeSet
+
+The actual objects contained in x. These are called nodes because
+they are treated with equality based on address, and not on the
+generalized equality that is used by ordinary builtin sets or dicts."""
+
 
     def __and__(self, other):
 	"""
@@ -198,15 +209,26 @@ that are in one of self or other, but not in both.
 	return self.fam.c_xor(self, other)
     __rxor__ = __xor__
 
-    def _get_brief(self):
-	"""
-Return a string representation of self, which is brief relative to the
+    brief = property(lambda self:self.fam.c_get_brief(self),
+                     doc="""\
+A string representation of self, which is brief relative to the
 representation returned by __str__ and __repr__. (In many cases it is
-the same - both are then brief - but for IdentitySet objects the
-brief representation is typically much shorter than the non-brief one.)
-"""
-	return self.fam.c_get_brief(self)
-    brief = property(_get_brief)
+the same - both are then brief - but for IdentitySet objects the brief
+representation is typically much shorter than the non-brief one.)"""
+                     )
+
+    def _get_help(self):
+        return self.fam.mod._root.guppy.doc.help_instance(self)
+
+    #dir = property(lambda self:self.fam.mod._root.guppy.doc.get_dir(self))
+    #dir = property(lambda self:self.fam.mod._root.guppy.doc.get_dir(self))
+    #man = guppy.man_property
+    #dir = guppy.gpdir_property
+
+    #man = property(lambda self:self.fam.mod._root.guppy.doc.get_man(self))
+    #man = property(guppy.getman)
+
+    doc = property(lambda self:self.fam.mod._root.guppy.etc.Help.dir(self))
 
     def get_ckc(self):
 	# Get low-level classification information, where available.
@@ -275,15 +297,25 @@ be returned; though typically env.failed() would raise an exception.
 	 """
 	return self.fam.c_test_contains(self, element, env)
 
-    def _get_biper(self):
-	return self.fam.c_get_biper(self)
+    biper = property(lambda self:self.fam.c_get_biper(self),
+                     doc = """\
+A bipartitioning equivalence relation based on x. This may be used to
+partition or classify sets into two equivalence classes:
 
-    biper = property(_get_biper)
+x.biper(0) == x
+    The set of elements that are in x.
+x.biper(1) == ~x
+    The set of elements that are not in x.
+	""")
 
-    def _get_dictof(self):
-	return self.fam.c_get_dictof(self)
+    dictof = property(lambda self:self.fam.c_get_dictof(self),
+                      doc = """dictof: UniSet
 
-    dictof = property(_get_dictof)
+If x represents a kind of objects with a builtin __dict__ attribute,
+x.dictof is the kind representing the set of all those dict
+objects. In effect, x.dictof maps lambda e:getattr(e, '__dict__') for
+all objects e in x. But it is symbolically evaluated to generate a new
+symbolic set (a Kind).""")
 
 class Kind(UniSet):
     __slots__ = 'arg',
@@ -298,7 +330,7 @@ class Kind(UniSet):
 
 class IdentitySet(UniSet):
     __slots__ = '_er', '_partition'
-
+    _help_url_ = 'heapy_UniSet.html#heapykinds.IdentitySet'
 
     def __getitem__(self, idx):	return self.fam.c_getitem(self, idx)
     def __len__(self):		return self.fam.c_len(self)
@@ -316,225 +348,10 @@ attribute in that it is a tabular representation.
 	return self.fam.c_str(self)
 
 
-    def _get_byclass(self):
-	"""
-Return a copy of self, but with 'Class' as the equivalence relation."""
-	return self.by('Class')
-
-    def _get_byclodo(self):
-	"""
-Return a copy of self, but with 'Clodo' as the equivalence relation."""
-
-	return self.by('Clodo')
-
-    def _get_byid(self):
-	"""
-Return a copy of self, but with 'Id' as the equivalence relation."""
-	return self.by('Id')
-
-    def _get_byidset(self):
-	"""
-Return a copy of self, but with 'Idset' as the equivalence relation."""
-	return self.by('Idset')
-
-    def _get_bymodule(self):
-	"""
-Return a copy of self, but with 'Module' as the equivalence relation."""
-	return self.by('Module')
-
-    def _get_byunity(self):
-	"""
-Return a copy of self, but with 'Unity' as the equivalence relation."""
-
-	return self.by('Unity')
-
-    def _get_byrcs(self):
-	"""
-Return a copy of self, but with 'Rcs' as the equivalence relation."""
-
-	return self.by('Rcs')
-
-    def _get_bysize(self):
-	"""
-Return a copy of self, but with 'Size' as the equivalence relation."""
-
-	return self.by('Size')
-
-    def _get_bytype(self):
-	"""
-Return a copy of self, but with 'Type' as the equivalence relation."""
-
-	return self.by('Type')
-
-    def _get_byvia(self):
-	"""
-Return a copy of self, but with 'Via' as the equivalence relation."""
-
-	return self.by('Via')
-
-    def _get_er(self):
-	"""
-Return the equivalence relation used for partitioning when representing / printing this set.
-
-"""
-	try:
-	    er = self._er
-	except AttributeError:
-	    er = self.fam.Use.Clodo
-	    self._er = er
-	return er
-
-
-	return self.fam.get_er(self)
-
-    def _get_count(self):
-	"""
-Return the number of individual objects in the set.
-"""
-	return len(self.nodes)
-
-    def _get_dominos(self):
-	"""
-Return the set 'dominated' by the set of objects in self. This is the
-objects that will become deallocated, directly or indirectly, when the
-objects in self are deallocated.
-See also: domisize."""
-	return self.fam.View.dominos(self)
-
-    def _get_domisize(self):
-	"""
-Return the dominated size of the set. The dominated size of a set X
-is the total size of memory that will become deallocated, directly or
-indirectly, when the objects in X are deallocated.
-See also: dominos, size."""
-	return self.fam.View.domisize(self)
-
-    def _get_help(self):
-	return """
-You are looking at an IdentitySet object.
-
-	"""
-
-    def _get_imdom(self):
-	"""
-Return the immediate dominators of self. The immediate dominators is a
-subset of the referrers. It includes only those referrers that are
-reachable directly, avoiding any other referrer."""
-	return self.fam.View.imdom(self)
-
-    def _get_indisize(self):
-	"""
-Return the total 'individual' size of the set of objects.  The
-individual size of an object is the size of memory that is allocated
-directly in the object, not including any externally visible
-subobjects. See also: domisize."""
-
-	return self.fam.View.indisize(self)
-
-    def _get_kind(self):
-	"""
-Return the kind of objects in the set. The kind is the union of the
-element-wise classifications as determined by the equivalence relation in use by
-the set.
-"""
-	return self.er[self]
-
-    def _get_maprox(self):
-
-	"""
-Return an object that can be used to map operations to the objects in
-self, forming a new set of the result. The returned object is an
-instance of MappingProxy.
-
-This works currently as follows:
-
-o Getting an attribute of the MappingProxy object will get the attribute from
-  each of the objects in the set and form a set of the results. If there
-  was an exception when getting some attribute, it would be ignored.
-
-o Indexing the MappingProxy object will index into each of the objects in the
-  set and return a set of the results. Exceptions will be ignored.
-
-Example:
-
->>> hp.iso({'a':'b'}, {'a':1}).maprox['a'].byid
-Set of 2  objects. Total size = 40 bytes.
- Index     Size   %   Cumulative  %   Kind: Name/Value/Address
-     0       28  70.0        28  70.0 str: 'b'
-     1       12  30.0        40 100.0 int: 1
->>> 
-
-<This is an experimental feature, so the name is intentionally made
-mystically-sounding, and is a shorthand for 'mapping proxy'.>
-"""
-
-	return MappingProxy(self)
-
-    def _get_more(self):
-	"""
-Return an object that can be used to show more lines of the string
-representation of self. The object returned, a MorePrinter instance,
-has a string representation that continues after the end of
-the representation of self.
-"""
-	return self.fam.get_more(self)
-
-    def _get_owners(self):
-	"""
-Return the set of objects that 'own'  objects in self. The owner
-is defined for an object of type dict, as the object (if any) that
-refers to the object via its special __dict__ attribute.  """
-	return self.fam.get_owners(self)
-
-    def _get_partition(self):
-	"""
-Return a partition of the set of objects in self. The set is
-partitioned into subsets by equal kind, as given by a equivalence relation.
-Unless otherwise specified, the equivalence relation used is 'byclodo', which
-means it classifies 'by type or class or dict owner'. Different
-equivalence relations are specified for sets created by the 'by_...' attributes of
-any IdentitySet object.
-
-The returned value is an instance of guppy.heapy.Part.Partition.
-"""
-
-	try:
-	    p = self._partition
-	except AttributeError:
-	    self.fam.View.clear_check()
-	    p = self.fam.Part.partition(self, self.er)
-	    self._partition = p
-	return p
-
-
-    def _get_pathsin(self):
-	"""
-Return the paths from the direct referrers of the objects in self.
-	"""
-	return self.get_shpaths(self.referrers)
-
-    def _get_pathsout(self):
-	"""
-Return the paths to the referents of the objects in self.
-	"""
-	return self.referents.get_shpaths(self)
-
-    def _get_referents(self):
-	"""
-Return the set of objects that are directly referred to by
-any of the objects in self."""
-	return self.fam.View.referents(self)
-	
-    def _get_referrers(self):
-	"""
-Return the set of objects that directly refer to
-any of the objects in self."""
-	return self.fam.View.referrers(self)
-
     def get_rp(self, depth=None, er=None, imdom=0, bf=0, src=None,
                stopkind=None, nocyc=False, ref=None):
 	"""
-X.get_rp(depth=None, er=None, imdom=0, bf=0, src=None, stopkind=None,
+x.get_rp(depth=None, er=None, imdom=0, bf=0, src=None, stopkind=None,
 	nocyc=False, ref=None)
 
 Return an object representing the pattern of references to the objects in X.
@@ -545,34 +362,34 @@ Arguments
 		default is taken from depth of this module.
 	er	The equivalence relation to partition the referrers.
         	The default is Clodo.
-	imdom	If true, the immediate dominators will be used instead
-		of the referrers. This will take longer time to calculate,
-		but may be useful to reduce the complexity of the reference
-		pattern.
+
+	imdom   If true, the immediate dominators will be used instead
+		of the referrers. This will take longer time to
+		calculate, but may be useful to reduce the complexity
+		of the reference pattern.
+
 	bf	If true, the pattern will be printed in breadth-first
 		order instead of depth-first. (Experimental.)
 	src	If specified, an alternative reference source instead
 		of the default root.
         stopkind
-		The referrers of objects of kind stopkind will not be followed.
+                The referrers of objects of kind stopkind will not be
+		followed.
 	nocyc	When True, certain cycles will not be followed.
         ref
+
+See also
+        rp (a shorthand for common cases)
+
 """
 	return self.fam.RefPat.rp(self, depth, er, imdom, bf, src, stopkind,
                                   nocyc, ref)
 
 
-    def _get_parts(self):
-	"""
-Return an iterable object, that can be used to iterate over the
-'parts' of self. The iteration order is determined by the
-sorting order the set has, in the table printed when partitioned."""
-
-	return self.fam.get_parts(self)
-
     def get_shpaths(self, src=None, avoid_nodes=None, avoid_edges=()):
-	"""
-Return an object containing the shortest paths to objects in self.
+	"""x.get_shpaths(draw:[src, avoid_nodes, avoid_edges]) -> Paths
+
+Return an object containing the shortest paths to objects in x.
 The optional arguments are:
 
     src:IdentitySet		An alternative source set of objects
@@ -581,16 +398,6 @@ The optional arguments are:
 
 """
 	return self.fam.Path.shpaths(self, src, avoid_nodes, avoid_edges)
-
-    def _get_stat(self):
-	return self.partition.get_stat()
-
-    def _get_theone(self):
-	"""
-Return the one object in a singleton set. In case the set does not
-contain exactly one object, the exception ValueError will be raised.
-"""
-	return self.fam.get_theone(self)
 
     # 'Normal' methods
 
@@ -607,45 +414,201 @@ contain exactly one object, the exception ValueError will be raised.
           Shorthand for .stat.dump """
         self.stat.dump(*args, **kwds)
 
-    # Properties using the _get_'s defined in this class
+    byclass = property(lambda self:self.by('Class'), doc="""\
+A copy of self, but with 'Class' as the equivalence relation.""")
 
-    byclass = property(_get_byclass)
-    byclodo = property(_get_byclodo)
-    byid = property(_get_byid)
-    byidset = property(_get_byidset)
-    bymodule = property(_get_bymodule)
-    byrcs = property(_get_byrcs)
-    bysize = property(_get_bysize)
-    bytype = property(_get_bytype)
-    byunity = property(_get_byunity)
-    byvia = property(_get_byvia)
+    byclodo = property(lambda self:self.by('Clodo'), doc="""\
+A copy of self, but with 'Clodo' as the equivalence relation.""")
 
-    er = property(_get_er)
-    count = property(_get_count)
-    dominos = property(_get_dominos)
-    domisize = property(_get_domisize)
-    help = property(_get_help)
-    imdom = property(_get_imdom)
-    indisize = size = property(_get_indisize) # Synonyms
-    kind = property(_get_kind)
-    maprox = property(_get_maprox)
-    more = property(_get_more)
-    owners = property(_get_owners)
-    partition = property(_get_partition)
-    parts = property(_get_parts)
-    pathsin = property(_get_pathsin)
-    pathsout = property(_get_pathsout)
-    referents = property(_get_referents)
-    referrers = property(_get_referrers)
-    rp = property(get_rp)
-    shpaths = property(get_shpaths)
-    sp = property(get_shpaths)
-    stat = property(_get_stat)
-    theone = property(_get_theone)
+    byidset = property(lambda self:self.by('Idset'), doc="""\
+A copy of self, but with 'Idset' as the equivalence relation.
+
+Note
+    This is mainly for special purpose internal use. The Id
+equivalence relation is more efficient when partitioning large
+sets.""")
+
+    byid = property(lambda self:self.by('Id'), doc="""\
+A copy of self, but with 'Id' as the equivalence relation.""")
+
+    bymodule = property(lambda self:self.by('Module'), doc="""\
+A copy of self, but with 'Module' as the equivalence relation.""")
+
+    byrcs = property(lambda self: self.by('Rcs'), doc="""\
+A copy of self, but with 'Rcs' as the equivalence relation.""")
+
+    bysize = property(lambda self: self.by('Size'), doc="""\
+A copy of self, but with 'Size' as the equivalence relation.""")
+
+    bytype = property(lambda self: self.by('Type'), doc="""\
+A copy of self, but with 'Type' as the equivalence relation.""")
+
+    byunity = property(lambda self: self.by('Unity'), doc="""\
+A copy of self, but with 'Unity' as the equivalence relation.""")
+
+    byvia = property(lambda self: self.by('Via'), doc="""
+A copy of self, but with 'Via' as the equivalence relation.""")
+
+    er = property(lambda self: self.fam.get_er(self), doc="""\
+The equivalence relation used for partitioning when representing /
+printing this set.""")
+
+    count = property(lambda self: len(self.nodes), doc="""\
+The number of individual objects in the set.""")
+
+    dominos = property(lambda self: self.fam.View.dominos(self), doc="""\
+The set 'dominated' by a set of objects. This is the objects that will
+become deallocated, directly or indirectly, when the objects in the
+set are deallocated.
+
+See also: domisize.""")
+
+    domisize = property(lambda self: self.fam.View.domisize(self), doc="""\
+The dominated size of a set of objects. This is the total size of
+memory that will become deallocated, directly or indirectly, when the
+objects in the set are deallocated.
+
+See also: dominos, size.
+""")
+
+    imdom = property(lambda self: self.fam.View.imdom(self), doc="""\
+The immediate dominators of a set of objects. The immediate dominators
+is a subset of the referrers. It includes only those referrers that
+are reachable directly, avoiding any other referrer.""")
+
+    indisize = size = property(lambda self:self.fam.View.indisize(self),doc="""\
+The total 'individual' size of the set of objects.  The individual
+size of an object is the size of memory that is allocated directly in
+the object, not including any externally visible subobjects. See also:
+domisize.""")
+
+    kind = property(lambda self: self.er[self], doc="""\
+The kind of objects in the set. The kind is the union of the
+element-wise classifications as determined by the equivalence relation
+in use by the set.""")
+
+    maprox = property(lambda self: MappingProxy(self), doc="""\
+An object that can be used to map operations to the objects in self,
+forming a new set of the result. The returned object is an instance of
+MappingProxy.
+
+This works currently as follows:
+
+o Getting an attribute of the MappingProxy object will get the
+  attribute from each of the objects in the set and form a set of the
+  results. If there was an exception when getting some attribute, it
+  would be ignored.
+
+o Indexing the MappingProxy object will index into each of the objects
+  in the set and return a set of the results. Exceptions will be
+  ignored.
+
+Example:
+
+>>> hp.iso({'a':'b'}, {'a':1}).maprox['a'].byid
+Set of 2  objects. Total size = 40 bytes.
+ Index     Size   %   Cumulative  %   Kind: Name/Value/Address
+     0       28  70.0        28  70.0 str: 'b'
+     1       12  30.0        40 100.0 int: 1
+>>> 
+
+<This is an experimental feature, so the name is intentionally made
+mystically-sounding, and is a shorthand for 'mapping proxy'.>""")
+
+    more = property(lambda self:self.fam.get_more(self), doc="""\
+An object that can be used to show more lines of the string
+representation of self. The object returned, a MorePrinter instance,
+has a string representation that continues after the end of the
+representation of self.""")
+
+    owners = property(lambda self: self.fam.get_owners(self), doc="""\
+The set of objects that 'own' objects in self. The owner is defined
+for an object of type dict, as the object (if any) that refers to the
+object via its special __dict__ attribute.""")
+
+    partition = property(lambda self: self.fam.get_partition(self), doc="""\
+A partition of the set of objects in self. The set is partitioned into
+subsets by equal kind, as given by a equivalence relation.  Unless
+otherwise specified, the equivalence relation used is 'byclodo', which
+means it classifies 'by type or class or dict owner'. Different
+equivalence relations are specified for sets created by the 'by_...'
+attributes of any IdentitySet object.
+
+The value is an instance of guppy.heapy.Part.Partition.""")
+
+    parts = property(lambda self: self.fam.get_parts(self), doc="""\
+An iterable object, that can be used to iterate over the 'parts' of
+self. The iteration order is determined by the sorting order the set
+has, in the table printed when partitioned.""")
+
+    pathsin = property(lambda self: self.get_shpaths(self.referrers), doc="""\
+The paths from the direct referrers of the objects in self.""")
+
+    pathsout = property(lambda self:self.referents.get_shpaths(self), doc="""\
+The paths to the referents of the objects in self.""")
+
+    referents = property(lambda self: self.fam.View.referents(self), doc="""\
+The set of objects that are directly referred to by any of the objects
+in self.""")
+
+    referrers = property(lambda self: self.fam.View.referrers(self), doc="""\
+The set of objects that directly refer to any of the objects in self.""")
+
+    rp = property(get_rp, doc="""\
+rp: ReferencePattern
+
+An object representing the pattern of references to the objects in X.
+
+See also
+    get_rp""")
+
+    shpaths = property(get_shpaths, doc="""x.shpaths: Paths
+
+An object containing the shortest paths to objects in x.
+
+Synonym
+    sp
+See also
+    get_shpaths""")
+
+    shpaths = property(get_shpaths, doc="""x.sp: Paths
+
+An object containing the shortest paths to objects in x.
+
+Synonym
+    sp
+See also
+    get_shpaths""")
+
+    sp = property(get_shpaths, doc="""x.sp: Paths
+
+An object containing the shortest paths to objects in x.
+
+Synonym
+    shpaths
+See also
+    get_shpaths""")
+
+
+
+    stat = property(lambda self: self.partition.get_stat(), doc="""\
+x.stat: Stat
+
+An object summarizing the statistics of the partitioning of x. This is
+useful when only the statistics is required, not the objects
+themselves. The statistics can be dumped to a file, unlike the set of
+objects itself.""")
+
+    theone = property(lambda self: self.fam.get_theone(self), doc="""\
+theone: Anything
+
+The one object in a singleton set. In case the set does not contain
+exactly one object, the exception ValueError will be raised.
+""")
 			 
-
 class IdentitySetMulti(IdentitySet):
     __slots__ = 'nodes',
+
     def __init__(self, fam, nodes):
 	self.fam = fam
 	self._hiding_tag_ = fam._hiding_tag_
@@ -654,17 +617,21 @@ class IdentitySetMulti(IdentitySet):
 
 class IdentitySetSingleton(IdentitySet):
     __slots__ = '_node',
+    _help_url_ = 'heapy_UniSet.html#heapykinds.IdentitySetSingleton'
+
     def __init__(self, fam, node):
 	self.fam = fam
 	self._hiding_tag_ = fam._hiding_tag_
 	self._node = node
 	self._origin_ = None
 
-    def _get_nodes(self):
-	# RefPat (eg) depends on this being usable as a hashable key.
-	return self.fam.immnodeset((self._node,))
+    # RefPat (eg) depends on this being usable as a hashable key.
+    nodes = property(lambda self: self.fam.immnodeset((self._node,)), doc="""\
+x.nodes: ImmNodeSet
 
-    nodes = property(_get_nodes)
+The actual objects contained in x. These are called nodes because they
+are treated with equality based on address, and not on the generalized
+equality that is used by ordinary builtin sets or dicts.""")
 
     def _get_theone(self):
 	return self._node
@@ -673,7 +640,27 @@ class IdentitySetSingleton(IdentitySet):
 
 
 class EquivalenceRelation(UniSet):
+    """\
+An equivalence relation is a binary relation between two elements of a
+set which groups them together as being "equivalent" in some way.
+
+An equivalence relation is reflexive, symmetric, and transitive. In
+other words, the following must hold for "~" to be an equivalence
+relation on X:
+
+    * Reflexivity: a ~ a
+    * Symmetry: if a ~ b then b ~ a
+    * Transitivity: if a ~ b and b ~ c then a ~ c.
+
+An equivalence relation partitions a set into several disjoint
+subsets, called equivalence classes. All the elements in a given
+equivalence class are equivalent among themselves, and no element is
+equivalent with any element from a different class.
+"""
+
     __slots__ = 'classifier', 'erargs'
+    _help_url_ = 'heapy_UniSet.html#heapykinds.EquivalenceRelation'
+
     def __init__(self, fam, classifier, erargs=()):
 	self.fam = fam
 	self._hiding_tag_ = fam._hiding_tag_
@@ -806,19 +793,10 @@ class Family:
 	d = self.export_dict
 	if b in d:
 	    return d[b](a, *args, **kwds)
-	if b == 'doc':
-	    d = self.c_getdoc(a)
-	    return d
 	return self.c_getattr2(a, b)
 
     def c_getattr2(self, a, b):
 	raise AttributeError, b
-
-    def c_getdoc(self, a):
-	d = getattr(a, '_origin_', ())
-	if d is ():
-	    d = self.mod._parent.Doc.callfunc(self, a.arg)
-	return d
 
     def c_get_render(self, a):
 	return self.mod.summary_str.str_address
@@ -1635,7 +1613,7 @@ class IdentitySetFamily(AtomFamily):
 
     def c_str(self, a):
 	ob = self.mod._parent.OutputHandling.output_buffer()
-	a._get_partition().ppob(ob)
+	a.fam.get_partition(a).ppob(ob)
 	return ob.getvalue().rstrip()
 
     def maprox_getattr(self, set, name):
@@ -1717,6 +1695,18 @@ class IdentitySetFamily(AtomFamily):
 
     def get_owners(self, a):
 	return self.mod.Use.Clodo.classifier.owners(a)
+
+    def get_partition(self, a):
+	try:
+	    p = a._partition
+	except AttributeError:
+	    a.fam.View.clear_check()
+	    p = a.fam.Part.partition(a, a.er)
+	    self._partition = p
+	return p
+
+
+
 
     def get_str_idpart(self, set, cla):
 	# Get the string that is used for the 'identity partition'

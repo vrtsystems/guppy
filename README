@@ -1,4 +1,4 @@
-This is Guppy-PE version 0.1.8
+This is Guppy-PE version 0.1.9
 
 A Python Programming Environment.
 
@@ -6,6 +6,8 @@ CONTENTS
 
 This distribution provides a root package, guppy, with the following
 subpackages:
+
+doc	Documentation data files: *.html, *.jpg, and help support.
 
 etc	Support modules. Contains especially the Glue protocol module.
 
@@ -21,8 +23,8 @@ sets	Bitsets and 'nodesets' implemented in C.
 The following files are not in packages but on the toplevel:
 
 gsl-mode-0.1.el		Emacs mode for GSL
-doc/*.html, *.jpg	Documentation
 specs/*.gsl		Specifications
+specs/genguppydoc.py	Regenerates the doc/*.html files from specs/*.gsl
 
 REQUIREMENTS
 
@@ -119,8 +121,9 @@ LICENSE
 
 Copyright (C) 2005 -- 2008 Sverker Nilsson, S. Nilsson Computer System AB
 
-The right is granted to copy and use this code according to the rules
-in what is commonly referred to as an MIT license.
+The right is granted to copy, use, modify and redistribute this code
+according to the rules in what is commonly referred to as an MIT
+license.
 
 *** USE AT YOUR OWN RISK AND BE AWARE THAT THIS IS AN EARLY RELEASE ***
 

@@ -28,6 +28,7 @@ char heapyc_doc[] =
 #include "structmember.h"
 #include "compile.h"
 #include "frameobject.h"
+#include "../include/guppy.h"
 #include "../sets/nodeset.h"
 #include "hpinit.h"
 #include "heapdef.h"
@@ -202,11 +203,24 @@ NyHeapDef NyHvTypes_HeapDef[] = {
 };
 
 
-DL_EXPORT (void)
+DL_EXPORT (int)
 INITFUNC (void)
 {
     PyObject *m;
     PyObject *d;
+
+    _Ny_RootStateStruct.ob_type = &NyRootState_Type;
+
+    NyNodeTuple_Type.tp_base = &PyTuple_Type;
+    NYFILL(NyNodeTuple_Type);
+    NYFILL(NyRelation_Type);
+    NYFILL(NyHeapView_Type);
+    NYFILL(NyObjectClassifier_Type);
+    NYFILL(NyHorizon_Type);
+    NYFILL(NyNodeGraph_Type);
+    NYFILL(NyNodeGraphIter_Type);
+    NYFILL(NyRootState_Type);
+
     m = Py_InitModule(MODNAME, module_methods);
     if (!m)
       goto error;
@@ -234,7 +248,8 @@ INITFUNC (void)
 #ifdef WITH_MALLOC_HOOKS
     sethooks();
 #endif
-    return ;
+    return 0;
   error:
     fprintf(stderr, "Error at initialization of module heapyc");
+    return -1;
 }

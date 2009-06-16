@@ -76,8 +76,8 @@ class Menu(Menu):
 	self.tk.call(self._w, 'delete', index1, index2)
 	# Now that the menu entries have been deleted,
         # we can delete their commands.
-	#for c in cmds:
-	#    self.deletecommand(c)
+	for c in cmds:
+	    self.deletecommand(c)
 
 
 
@@ -3135,6 +3135,21 @@ class _GLUECLAMP_:
     
 
     def pb(self, filename=None):
+        """pb( [filename: profilefilename+])
+
+Create a Profile Browser window.
+
+Argument
+    filename: profilefilename+
+        The name of a file containing profile data.
+See also
+    Heapy Profile Browser[1]
+    Screenshot[2]
+References
+    [0] heapy_Use.html#heapykinds.Use.pb
+    [1] ProfileBrowser.html
+    [2] pbscreen.jpg"""    
+
 	pa = ProfileApp(self)
 	pa.new_profile_browser(filename)
 	pa.mainloop()

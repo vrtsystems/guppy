@@ -28,7 +28,7 @@ def dotname(first, last):
     else:
 	return first + last
 
-class Interface:
+class Interface(object):
     def __init__(self, share, owner, name):
 	self.__dict__['_share'] = share
 	self.__dict__['_owner'] = owner
@@ -41,6 +41,7 @@ class Interface:
 
 
     def __getattr__(self, name):
+        #print 'getattr', name
 	return self._share.getattr(self, name)
 
     def __setattr__(self, name, value):
@@ -64,7 +65,12 @@ class Owner:
     def makeInterface(self, cache, share, name):
 	name = dotname(cache['_name'], name)
 	if share not in self.inters:
-	    self.inters[share] = Interface(share, self, name)
+            Clamp=share.Clamp
+            if Clamp is not None and issubclass(Clamp, Interface):
+                NewInterface = Clamp
+            else:
+                NewInterface = Interface
+	    self.inters[share] = NewInterface(share, self, name)
 	return self.inters[share]
 
     def pp(self, out=None,short=0):
@@ -86,6 +92,7 @@ class Owner:
 
 class Share:
     has_getattr_logging_enabled = False
+    Clamp=None
     def __init__(self, module, parent, name, Clamp):
 	if parent is None:
 	    parent = self
@@ -95,7 +102,8 @@ class Share:
 	self.module = module
 	self.parent = parent
 	self.name = name
-	self.Clamp = Clamp
+        if Clamp is not None:
+            self.Clamp = Clamp
 
 	self.setable = getattr(Clamp, '_setable_', ())
 	if not isinstance(self.setable, tuple):
@@ -199,7 +207,10 @@ class Share:
 		self.recursion += 1
 		try:
 		    if self.ispackage:
-                        x = self.getattr_package(inter, name)
+                        try:
+                            x = self.getattr3(inter, name)
+                        except:
+                            x = self.getattr_package(inter, name)
 		    else:
 			x = self.getattr3(inter, name)
 		except NoSuchAttributeError:
@@ -375,6 +386,13 @@ class _GLUECLAMP_:
 
 
 def Root():
+    """\
+Create a new guppy Root object.
+
+All functionality in the system may be accessed from this object.
+Modules are imported on demand when accessed. Other objects may be
+created or imported on demand using Guppy Glue+ directives.
+"""
     share = Share(None, None, '', None)
     r = Owner('').makeInterface({'_name':''}, share, '')
     share.root_interface = r
