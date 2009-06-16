@@ -60,7 +60,7 @@ install/python-guppy-lib-dbg ::
 	find $(DEB_DESTDIR)-lib-dbg -depth -empty -exec rmdir \{\} \;
 
 binary-predeb/python-guppy-lib-dbg::
-	mkdir -p $(DEB_DESTDIR)-lib-dbg/usr/share/doc
+	rm -rf $(DEB_DESTDIR)-lib-dbg/usr/share/doc/python-guppy-lib-dbg
 	ln -s python-guppy-lib \
 	  $(DEB_DESTDIR)-lib-dbg/usr/share/doc/python-guppy-lib-dbg
 
