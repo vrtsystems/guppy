@@ -14,7 +14,7 @@ Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-guppy-lib (>= ${source:Version})
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
-Description: Python programming environment
+Description: Python programming environment Guppy-PE
  Guppy-PE is a programming environment providing object and heap
  memory sizing, profiling and analysis. It includes a prototypical
  specification language that can be used to formally specify aspects of
@@ -36,8 +36,10 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 Provides: ${python:Provides}
 Suggests: python-guppy-lib-dbg
 XB-Python-Version: ${python:Versions}
-Description: XXX
- XXX
+Description: Dynamic libraries for Guppy-PE
+ This package contains dynamic architecuture-dependent libraries for
+ Guppy-PE Python programming environment which is shipped within
+ python-guppy package.
 
 Package: python-guppy-lib-dbg
 Architecture: any
@@ -46,5 +48,7 @@ Priority: extra
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-dbg, python-guppy-lib (= ${binary:Version})
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
-Description: XXXYYY
- XXXYYY
+Description: Debug Build of Dynamic libraries for Guppy-PE
+ This package contains unstripped and built with python-dbg dynamic
+ architecuture-dependent libraries for Guppy-PE Python programming
+ environment.
