@@ -5,6 +5,10 @@ DEB_PYTHON_SYSTEM = pysupport
 DEB_PYTHON_MODULE_PACKAGES = python-guppy python-guppy-lib python-guppy-lib-dbg
 include /usr/share/cdbs/1/class/python-distutils.mk
 
+# Add here any variable or target overrides you need.
+# install directly into package directory (despite multiple packages)
+DEB_DESTDIR = $(CURDIR)/debian/python-guppy
+
 #
 # Testing: TODO after unittests are ready to be ran without
 #          downloading data from online
@@ -27,7 +31,7 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 install/python-guppy-lib::
 # move libraries into the python-guppy-lib package
 #	mkdir -p debian/python-guppy-lib/usr/
-	find debian/python-guppy/ -iname *so | \
+	find $(DEB_DESTDIR) -iname *so | \
 	  while read so; do \
 	    d=$$(dirname $$so); \
 	    d=$$(echo $$d | sed -e 's,python-guppy/,python-guppy-lib/,g'); \
@@ -52,7 +56,8 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
               -c 'from guppy import hpy; hpy().test()'; \
     done
 endif
-
+	install -D --mode 644 gsl-mode-*.el \
+	   $(DEB_DESTDIR)/usr/share/emacs/site-lisp/gsl/gsl-mode.el
 
 #
 # Debugging version -lib-dbg
@@ -61,23 +66,19 @@ endif
 install/python-guppy-lib-dbg ::
 	for i in $(cdbs_python_build_versions); do \
 	  python$$i-dbg ./setup.py install $(DEB_PYTHON_INSTALL_ARGS_ALL) \
-		 --root $(CURDIR)/debian/python-guppy-lib-dbg; \
+		 --root $(DEB_DESTDIR)-lib-dbg; \
 	done
-	find debian/python-guppy-lib-dbg \
+	find $(DEB_DESTDIR)-lib-dbg \
 	  ! -type d ! -name '*_d.so' | xargs rm -f
 # Prune empty directories
-	find debian/python-guppy-lib-dbg -depth -empty -exec rmdir \{\} \;
+	find $(DEB_DESTDIR)-lib-dbg -depth -empty -exec rmdir \{\} \;
 
 binary-predeb/python-guppy-lib-dbg::
-	mkdir -p debian/python-guppy-lib-dbg/usr/share/doc
-	ln -s python-guppy-lib debian/python-guppy-lib-dbg/usr/share/doc/python-guppy-lib-dbg
+	mkdir -p $(DEB_DESTDIR)-lib-dbg/usr/share/doc
+	ln -s python-guppy-lib \
+	  $(DEB_DESTDIR)-lib-dbg/usr/share/doc/python-guppy-lib-dbg
 
 
-
-
-# Add here any variable or target overrides you need.
-# install directly into package directory (despite multiple packages)
-DEB_DESTDIR = $(CURDIR)/debian/python-guppy
 # immediately useable documentation
 # and exemplar data (they are small excerpts anyways)
 DEB_COMPRESS_EXCLUDE := .py .pdf .html .css .jpg .txt .js .json .rtc .par .bin
