@@ -2,11 +2,7 @@
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 DEB_PYTHON_SYSTEM = pysupport
-# for earlier cdbs versions
-
-DEB_PYTHON_MODULE_PACKAGE = python-guppy
-# for cdbs >= 0.4.54
-DEB_PYTHON_MODULE_PACKAGES = python-nipy python-nipy-lib python-nipy-lib-dbg
+DEB_PYTHON_MODULE_PACKAGES = python-guppy python-guppy-lib python-guppy-lib-dbg
 include /usr/share/cdbs/1/class/python-distutils.mk
 
 #
@@ -18,48 +14,48 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 #        python setup.py test
 #endif
 
-## #
-## # Main and -lib
-## #
-## 
+#
+# Main and -lib
+#
+
 ## # We need to call the install for arch indep to install things
 ## # appropriately
-## install/python-nipy-lib:: install/python-nipy
+## install/python-guppy-lib:: install/python-guppy
 ## 
 ## # we need to move libraries away first, hence dependence on -lib
-## binary-install/python-nipy:: install/python-nipy-lib
-## binary-predeb/python-nipy::
+## binary-install/python-guppy:: install/python-guppy-lib
+## binary-predeb/python-guppy::
 ## # clean up .pyc files
-## 	find debian/python-nipy/ -iname *.py[co] | xargs rm -f
+## 	find debian/python-guppy/ -iname *.py[co] | xargs rm -f
 ## 
-## install/python-nipy-lib::
-## # move libraries into the python-nipy-lib package
-## #	mkdir -p debian/python-nipy-lib/usr/
-## 	find debian/python-nipy/ -iname *so | \
-## 	  while read so; do \
-## 	    d=$$(dirname $$so); \
-## 	    d=$$(echo $$d | sed -e 's,python-nipy/,python-nipy-lib/,g'); \
-## 	    mkdir -p $$d; mv $$so $$d; \
-## 	  done
-## 
-## #
-## # Debugging version -lib-dbg
-## #
-## # Re-build using python-dbg
-## install/python-guppy-lib-dbg ::
-## 	for i in $(cdbs_python_build_versions); do \
-## 	  python$$i-dbg ./setup.py install $(DEB_PYTHON_INSTALL_ARGS_ALL) \
-## 		 --root $(CURDIR)/debian/python-guppy-lib-dbg; \
-## 	done
-## 	find debian/python-guppy-lib-dbg \
-## 	  ! -type d ! -name '*_d.so' | xargs rm -f
-## # Prune empty directories
-## 	find debian/python-guppy-lib-dbg -depth -empty -exec rmdir \{\} \;
-## 
-## binary-predeb/python-guppy-lib-dbg::
-## 	mkdir -p debian/python-guppy-lib-dbg/usr/share/doc
-## 	ln -s python-guppy-lib debian/python-guppy-lib-dbg/usr/share/doc/python-guppy-lib-dbg
-## 
+install/python-guppy-lib::
+# move libraries into the python-guppy-lib package
+#	mkdir -p debian/python-guppy-lib/usr/
+	find debian/python-guppy/ -iname *so | \
+	  while read so; do \
+	    d=$$(dirname $$so); \
+	    d=$$(echo $$d | sed -e 's,python-guppy/,python-guppy-lib/,g'); \
+	    mkdir -p $$d; mv $$so $$d; \
+	  done
+
+#
+# Debugging version -lib-dbg
+#
+# Re-build using python-dbg
+install/python-guppy-lib-dbg ::
+	for i in $(cdbs_python_build_versions); do \
+	  python$$i-dbg ./setup.py install $(DEB_PYTHON_INSTALL_ARGS_ALL) \
+		 --root $(CURDIR)/debian/python-guppy-lib-dbg; \
+	done
+	find debian/python-guppy-lib-dbg \
+	  ! -type d ! -name '*_d.so' | xargs rm -f
+# Prune empty directories
+	find debian/python-guppy-lib-dbg -depth -empty -exec rmdir \{\} \;
+
+binary-predeb/python-guppy-lib-dbg::
+	mkdir -p debian/python-guppy-lib-dbg/usr/share/doc
+	ln -s python-guppy-lib debian/python-guppy-lib-dbg/usr/share/doc/python-guppy-lib-dbg
+
 
 
 

@@ -1,8 +1,8 @@
 Source: guppy
-Section: devel
+Section: python
 Priority: optional
 Maintainer: Yaroslav Halchenko <debian@onerussian.com>
-Build-Depends: debhelper (>= 5.0.38), python-all-dev (>=2.3.5-11), python-support (>=0.6), cdbs
+Build-Depends: debhelper (>= 5.0.38), python-all-dev (>=2.3.5-11), python-all-dbg (>=2.3.5-11), python-support (>=0.6), cdbs
 Standards-Version: 3.8.1
 Vcs-Browser: http://git.onerussian.com/?p=deb/guppy.git
 Vcs-Git: git://git.onerussian.com/deb/guppy.git
@@ -34,6 +34,7 @@ Package: python-guppy-lib
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 Provides: ${python:Provides}
+Suggests: python-guppy-lib-dbg
 XB-Python-Version: ${python:Versions}
 Description: XXX
  XXX
@@ -42,8 +43,8 @@ Package: python-guppy-lib-dbg
 Architecture: any
 Section: debug
 Priority: extra
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-guppy-lib (= ${binary:Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-dbg, python-guppy-lib (= ${binary:Version})
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
-Description: XXX
- XXX
+Description: XXXYYY
+ XXXYYY
