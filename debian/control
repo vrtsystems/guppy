@@ -1,14 +1,17 @@
 Source: guppy
 Section: devel
-Priority: extra
+Priority: optional
 Maintainer: Yaroslav Halchenko <debian@onerussian.com>
-Build-Depends: debhelper (>= 5.0.38), python-all-dev (>=2.3.5-11), python-central (>=0.5.6), dpatch
-XS-Python-Version: >=2.3
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 5.0.38), python-all-dev (>=2.3.5-11), python-support (>=0.6)
+Standards-Version: 3.8.1
+Vcs-Browser: http://git.onerussian.com/?p=deb/guppy.git
+Vcs-Git: git://git.onerussian.com/deb/guppy.git
+Homepage: http://guppy-pe.sourceforge.net
+
 
 Package: python-guppy
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-guppy-lib (>= ${source:Version})
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python programming environment
@@ -26,5 +29,21 @@ Description: Python programming environment
     to tests as well as to documents
   - Guppy: umbrella package combining Heapy and GSL with support
     utilities such as the Glue module that keeps things together
- .
-  Homepage: http://guppy-pe.sourceforge.net
+
+Package: python-guppy-lib
+Architecture: any
+Section: debug
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Provides: ${python:Provides}
+XB-Python-Version: ${python:Versions}
+Description: XXX
+  XXX
+
+Package: python-guppy-lib-dbg
+Architecture: any
+Section: debug
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-guppy-lib (= ${binary:Version})
+Provides: ${python:Provides}
+XB-Python-Version: ${python:Versions}
+Description: XXX
+  XXX
