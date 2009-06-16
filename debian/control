@@ -37,7 +37,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: XXX
-  XXX
+ XXX
 
 Package: python-guppy-lib-dbg
 Architecture: any
@@ -46,4 +46,4 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}, python-guppy-lib
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: XXX
-  XXX
+ XXX
