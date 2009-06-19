@@ -515,11 +515,15 @@ bits_first(NyBits bits)
     int i = 0;
     assert(bits);
 
-#if NyBits_64
+#if (NyBits_N==64)
     if (!(bits & 0xffffffff)) {
 	i += 32;
 	bits = bits >> 32;
     }
+#elif (NyBits_N==32)
+/* Nothing */
+#else
+#error "Unsupported NyBits_N"
 #endif
     if (!(bits & 0xffff)) {
 	i += 16;
@@ -550,15 +554,31 @@ bits_last(NyBits bits)
 {
     int i = NyBits_N-1;
     assert(bits);
-#if (NyBits_64)
+#if (NyBits_N==64)
     if (!(bits & 0xffffffff00000000)) {
 	i -= 32;
 	bits = bits << 32;
     }
-#elif (NyBits_32)
-#else
-  assert(0);
-#endif
+    if (!(bits & 0xffff000000000000)) {
+	i -= 16;
+	bits = bits << 16;
+    }
+    if (!(bits & 0xff00000000000000)) {
+	i -= 8;
+	bits = bits << 8;
+    }
+    if (!(bits & 0xf000000000000000)) {
+	i -= 4;
+	bits = bits << 4;
+    }
+    if (!(bits & 0xc000000000000000)) {
+	i -= 2;
+	bits = bits << 2;
+    }
+    if (!(bits & 0x8000000000000000)) {
+	i -= 1;
+    }
+#elif (NyBits_N==32)
     if (!(bits & 0xffff0000)) {
 	i -= 16;
 	bits = bits << 16;
@@ -578,6 +598,9 @@ bits_last(NyBits bits)
     if (!(bits & 0x80000000)) {
 	i -= 1;
     }
+#else
+#error "Unsupported NyBits_N"
+#endif
     return i;
 }
 
@@ -2483,7 +2506,7 @@ NyMutBitSet_pop(NyMutBitSetObject *v, NyBit i)
 	    if (f->bits) {
 		j = bits_last(f->bits);
 		ret = f->pos * NyBits_N + j;
-		f->bits &= ~(1<<j);
+		f->bits &= ~(1l<<j);
 		if (f->bits)
 		  mutbitset_set_hi(v, s, f+1);
 		else
@@ -2497,7 +2520,7 @@ NyMutBitSet_pop(NyMutBitSetObject *v, NyBit i)
 	    if (f->bits) {
 		j = bits_first(f->bits);
 		ret = f->pos * NyBits_N + j;
-		f->bits &= ~(1<<j);
+		f->bits &= ~(1l<<j);
 		if (f->bits)
 		  mutbitset_set_lo(v, s, f);
 		else
@@ -2516,7 +2539,7 @@ NyMutBitSet_pop(NyMutBitSetObject *v, NyBit i)
 static PyObject *
 mutbitset_pop(NyMutBitSetObject *v, PyObject *args)
 {
-    NyBit i = -1;
+    int i = -1;
     NyBit bit;
     if (!PyArg_ParseTuple(args, "|i:pop", &i))
       return NULL;
