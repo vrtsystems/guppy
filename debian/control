@@ -3,7 +3,7 @@ Section: python
 Priority: optional
 Maintainer: Yaroslav Halchenko <debian@onerussian.com>
 Build-Depends: debhelper (>= 5.0.38), python-all-dev (>=2.3.5-11), python-all-dbg (>=2.3.5-11), python-support (>=0.6), cdbs
-Standards-Version: 3.8.1
+Standards-Version: 3.8.4.0
 Vcs-Browser: http://git.onerussian.com/?p=deb/guppy.git
 Vcs-Git: git://git.onerussian.com/deb/guppy.git
 Homepage: http://guppy-pe.sourceforge.net
