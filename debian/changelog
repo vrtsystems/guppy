@@ -2,6 +2,9 @@ guppy (0.1.9-2) unstable; urgency=low
 
   * Boosted policy compliance to 3.8.4.0 -- no changes seems to be due.
 
+  * Incorporated tentative upstream fix to make heapy compatible with
+    big-endian architectures (Closes: #544767).
+
  -- Yaroslav Halchenko <debian@onerussian.com>  Sat, 13 Feb 2010 22:10:34 -0500
 
 guppy (0.1.9-1) unstable; urgency=low
